@@ -11,6 +11,7 @@ void ShowHelpMessage() {
         "To perform decryption this tool needs:\n"
         "1. A ciphertext encrypted with Caesar cipher.\n"
         "2. A key/shift (1-25).\n\n"
+        
         "If you don't have a key, but have a large ciphertext,"
         "frequency analysis can be carried out.\n\n"
         
@@ -20,8 +21,8 @@ void ShowHelpMessage() {
         "3. caesar_problem_solver ciphertext-path plaintext-path\n\n"
 
         "Default values:\n"
-        "1. ciphertext-path = ciphertext.txt\n"
-        "2-3. plaintext-path = plaintext.txt\n";
+        "1.   ciphertext-path = ciphertext.txt\n"
+        "2-3. plaintext-path  = plaintext.txt\n";
     
     fputs(message, stdout);
 }
