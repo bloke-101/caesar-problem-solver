@@ -128,18 +128,28 @@ int DoEncryption(char* plaintextPath, char* ciphertextPath, int shift) {
 }
 
 int DoDecryption(char* ciphertextPath, char* plaintextPath, int shift) {
-    FILE* in;
+    if (!IsShiftInRange(shift)) {
+        fprintf(stderr, "Shift is out of range:%d", shift);
+        return -1;
+    }
+    FILE* in = NULL;
     if (OpenFile(&in, ciphertextPath, "r") == -1) {
         return -1;    
     }
-    FILE* out;
+    FILE* out = NULL;
     if (OpenFile(&out, plaintextPath, "w") == -1) {
+        CleanUp(&in, ciphertextPath, &out, plaintextPath);
         return -1;    
     }
-    printf("FILE DECRYPTING\n");
-    if (CleanUp(&in, plaintextPath, &out, ciphertextPath) == -1) {
+    if (DecryptFile(in, out, shift) == -1) {
+        CleanUp(&in, ciphertextPath, &out, plaintextPath);
         return -1;
     }
+    if (CleanUp(&in, ciphertextPath, &out, plaintextPath) == -1) {
+        return -1;
+    }
+    char* msg = "Decrypted %s with shift=%d and saved it as %s\n"; 
+    printf(msg, ciphertextPath, shift, plaintextPath);
     return 0;
 }
 

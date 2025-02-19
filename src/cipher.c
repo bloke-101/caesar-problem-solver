@@ -13,21 +13,29 @@ int IsUpperCaseLetter(char c) {
     return c >= 'A' && c <= 'Z';
 }
 
-void ShiftLowerCaseLetter(char in, char* out, int shift) {
+void ShiftLowerCaseLetterToRight(char in, char* out, int shift) {
     *out = in + shift <= 'z' ? in + shift : in + shift - 26;    
 }
 
-void ShiftUpperCaseLetter(char in, char* out, int shift) {
+void ShiftLowerCaseLetterToLeft(char in, char* out, int shift) {
+    *out = in - shift >= 'a' ? in - shift : in - shift + 26;  
+}
+
+void ShiftUpperCaseLetterToRight(char in, char* out, int shift) {
     *out = in + shift <= 'Z' ? in + shift : in + shift - 26;
+}
+
+void ShiftUpperCaseLetterToLeft(char in, char* out, int shift) {
+    *out = in - shift >= 'A' ? in - shift : in - shift + 26;  
 }
 
 void Encrypt(char* in, char* out, int shift) {
     for (int i = 0; i < BLOCK_SIZE; i++) {
         if (IsLowerCaseLetter(in[i])) {
-            ShiftLowerCaseLetter(in[i], &out[i], shift);
+            ShiftLowerCaseLetterToRight(in[i], &out[i], shift);
         }
         else if (IsUpperCaseLetter(in[i])) {
-            ShiftUpperCaseLetter(in[i], &out[i], shift);
+            ShiftUpperCaseLetterToRight(in[i], &out[i], shift);
         }
         else {
             out[i] = in[i];
@@ -47,6 +55,37 @@ int EncryptFile(FILE* in, FILE* out, int shift) {
     }
     if (ferror(in)) {
         perror("Failed to read a plaintext line");
+        return -1;
+    }
+    return 0;
+}
+
+void Decrypt(char* in, char* out, int shift) {
+    for (int i = 0; i < BLOCK_SIZE; i++) {
+        if (IsLowerCaseLetter(in[i])) {
+            ShiftLowerCaseLetterToLeft(in[i], &out[i], shift);
+        }
+        else if (IsUpperCaseLetter(in[i])) {
+            ShiftUpperCaseLetterToLeft(in[i], &out[i], shift);
+        }
+        else {
+            out[i] = in[i];
+        }
+    }    
+}
+
+int DecryptFile(FILE* in, FILE* out, int shift) {
+    char cipherntext[BLOCK_SIZE];
+    char plaintext[BLOCK_SIZE];
+    while (fgets(cipherntext, BLOCK_SIZE, in)) {
+        Decrypt(cipherntext, plaintext, shift);
+        if (fputs(plaintext, out) == -1) {
+            perror("Failed to write a decrypted line");
+            return -1;
+        }
+    }
+    if (ferror(in)) {
+        perror("Failed to read a ciphertext line");
         return -1;
     }
     return 0;
