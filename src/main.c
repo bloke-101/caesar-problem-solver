@@ -2,6 +2,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include <cipher.h>
+
 
 void ShowHelpMsg() {
     char* message = "Encrypt/decrypt text files with Caesar cipher.\n\n"
@@ -32,8 +34,8 @@ void ShowIncorrectArgsMsg() {
     ShowHelpMsg();
 }
 
-int IsInRange(int* amountOfArgs) {
-    return *amountOfArgs >= 4 && *amountOfArgs <= 5;
+int IsIArgsnRange(int amountOfArgs) {
+    return amountOfArgs >= 4 && amountOfArgs <= 5;
 }
 
 int IsEncryptionMode(char* mode) {
@@ -57,8 +59,8 @@ int ConvertStrToInt(char* str, int* shift) {
     return 0;
 }
 
-int IsShiftInRange(int* shift) {
-    return *shift > 0 && *shift <= 25;
+int IsShiftInRange(int shift) {
+    return shift >= 1 && shift <= 25;
 }
 
 int OpenFile(FILE** f, char* filepath, char* mode) {
@@ -70,7 +72,14 @@ int OpenFile(FILE** f, char* filepath, char* mode) {
     return 0;
 }
 
+int IsOpen(FILE* f) {
+    return f != NULL;
+}
+
 int CloseFile(FILE** f, char* filepath) {
+    if (!IsOpen(*f)) {
+        return 0;
+    }
     if (fclose(*f) == EOF) {
         char* msg = "Failed to close %s:%s\n";
         fprintf(stderr, msg, filepath, strerror(errno));
@@ -81,6 +90,9 @@ int CloseFile(FILE** f, char* filepath) {
 
 int CleanUp(FILE** in, char* inFilepath, FILE** out, char* outFilepath) {
     if (CloseFile(in, inFilepath) == -1) {
+        if (CloseFile(out, outFilepath) == -1) {
+            return -1;
+        }
         return -1;
     }
     if (CloseFile(out, outFilepath) == -1) {
@@ -89,27 +101,33 @@ int CleanUp(FILE** in, char* inFilepath, FILE** out, char* outFilepath) {
     return 0;
 }
 
-int DoEncryption(char* plaintextPath, char* ciphertextPath, int* shift) {
+int DoEncryption(char* plaintextPath, char* ciphertextPath, int shift) {
     if (!IsShiftInRange(shift)) {
-        fprintf(stderr, "Shift is out of range:%d", *shift);
+        fprintf(stderr, "Shift is out of range:%d", shift);
         return -1;
     }
-    FILE* in;
+    FILE* in = NULL;
     if (OpenFile(&in, plaintextPath, "r") == -1) {
         return -1;    
     }
-    FILE* out;
+    FILE* out = NULL;
     if (OpenFile(&out, ciphertextPath, "w") == -1) {
+        CleanUp(&in, plaintextPath, &out, ciphertextPath);
         return -1;    
     }
-    printf("FILE ENCRYPTING\n");
+    if (EncryptFile(in, out, shift) == -1) {
+        CleanUp(&in, plaintextPath, &out, ciphertextPath);
+        return -1;
+    }
     if (CleanUp(&in, plaintextPath, &out, ciphertextPath) == -1) {
         return -1;
     }
+    char* msg = "Encrypted %s with shift=%d and saved it as %s\n"; 
+    printf(msg, plaintextPath, shift, ciphertextPath);
     return 0;
 }
 
-int DoDecryption(char* ciphertextPath, char* plaintextPath, int* shift) {
+int DoDecryption(char* ciphertextPath, char* plaintextPath, int shift) {
     FILE* in;
     if (OpenFile(&in, ciphertextPath, "r") == -1) {
         return -1;    
@@ -126,26 +144,26 @@ int DoDecryption(char* ciphertextPath, char* plaintextPath, int* shift) {
 }
 
 int main(int argc, char** argv) {
-    if (!IsInRange(&argc) || !IsSupportedMode(argv[1])) {
+    if (!IsIArgsnRange(argc) || !IsSupportedMode(argv[1])) {
         ShowIncorrectArgsMsg();
-        return -1;
+        return 0;
     }
     int shift = -1;
     if (IsDecryptionMode(argv[1]) && argc == 4) {
-        return DoDecryption(argv[2], argv[3], &shift);
+        return DoDecryption(argv[2], argv[3], shift);
     }
     if (ConvertStrToInt(argv[argc - 1], &shift) == -1) {
         return -1;
     }
-    if (!IsShiftInRange(&shift)) {
+    if (!IsShiftInRange(shift)) {
         fprintf(stderr, "Shift is out of range: %d\n", shift);
         return -1;
     }
     if (IsEncryptionMode(argv[1])) {
-        return DoEncryption(argv[2], argv[3], &shift);
+        return DoEncryption(argv[2], argv[3], shift);
     }
     else if (IsDecryptionMode(argv[1])) {
-        return DoDecryption(argv[2], argv[3], &shift);
+        return DoDecryption(argv[2], argv[3], shift);
     }
     return 0;
 }
