@@ -3,7 +3,10 @@
 ## Description
 
 Caesar-Problem-Solver is a CLI tool to encrypt or/and decrypt English text
-encrypted with Caesar cipher.
+encrypted with the Caesar cipher.
+
+If you have a large English text encrypted with the Caesar cipher, but
+don't have a key to decrypt the text, the tool helps you. It can perform frequency analysis to find the key and then decrypt the text.
 
 The tool accepts **mode**, **input** file path, **output** filepath and
 **key** as CLI arguments.
