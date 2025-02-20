@@ -34,7 +34,7 @@ void ShowIncorrectArgsMsg() {
     ShowHelpMsg();
 }
 
-int IsIArgsnRange(int amountOfArgs) {
+int IsArgsInRange(int amountOfArgs) {
     return amountOfArgs >= 4 && amountOfArgs <= 5;
 }
 
@@ -154,7 +154,7 @@ int DoDecryption(char* ciphertextPath, char* plaintextPath, int shift) {
 }
 
 int main(int argc, char** argv) {
-    if (!IsIArgsnRange(argc) || !IsSupportedMode(argv[1])) {
+    if (!IsArgsInRange(argc) || !IsSupportedMode(argv[1])) {
         ShowIncorrectArgsMsg();
         return 0;
     }
