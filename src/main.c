@@ -60,7 +60,7 @@ int ConvertStrToInt(char* str, int* shift) {
 }
 
 int IsShiftInRange(int shift) {
-    return shift >= 1 && shift <= 25;
+    return shift == -1 || shift >= 1 && shift <= 25;
 }
 
 int OpenFile(FILE** f, char* filepath, char* mode) {

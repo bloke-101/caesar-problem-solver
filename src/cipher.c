@@ -1,17 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cipher.h"
+#include <utils.h>
+#include "frequency_analyzer.h"
 
-const unsigned int BLOCK_SIZE = 257;
-
-int IsLowerCaseLetter(char c) {
-    return c >= 'a' && c <= 'z';
-}
-
-int IsUpperCaseLetter(char c) {
-    return c >= 'A' && c <= 'Z';
-}
 
 void ShiftLowerCaseLetterToRight(char in, char* out, int shift) {
     *out = in + shift <= 'z' ? in + shift : in + shift - 26;    
@@ -30,6 +22,7 @@ void ShiftUpperCaseLetterToLeft(char in, char* out, int shift) {
 }
 
 void Encrypt(char* in, char* out, int shift) {
+    int BLOCK_SIZE = 257;
     for (int i = 0; i < BLOCK_SIZE; i++) {
         if (IsLowerCaseLetter(in[i])) {
             ShiftLowerCaseLetterToRight(in[i], &out[i], shift);
@@ -44,6 +37,7 @@ void Encrypt(char* in, char* out, int shift) {
 }
 
 int EncryptFile(FILE* in, FILE* out, int shift) {
+    int BLOCK_SIZE = 257;
     char plaintext[BLOCK_SIZE];
     char ciphertext[BLOCK_SIZE];
     while (fgets(plaintext, BLOCK_SIZE, in)) {
@@ -61,6 +55,7 @@ int EncryptFile(FILE* in, FILE* out, int shift) {
 }
 
 void Decrypt(char* in, char* out, int shift) {
+    int BLOCK_SIZE = 257;
     for (int i = 0; i < BLOCK_SIZE; i++) {
         if (IsLowerCaseLetter(in[i])) {
             ShiftLowerCaseLetterToLeft(in[i], &out[i], shift);
@@ -75,6 +70,10 @@ void Decrypt(char* in, char* out, int shift) {
 }
 
 int DecryptFile(FILE* in, FILE* out, int shift) {
+    if (shift == -1 && FindShift(in, &shift) == -1) {
+        return -1;
+    }
+    int BLOCK_SIZE = 257;
     char cipherntext[BLOCK_SIZE];
     char plaintext[BLOCK_SIZE];
     while (fgets(cipherntext, BLOCK_SIZE, in)) {
