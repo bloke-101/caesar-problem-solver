@@ -18,7 +18,7 @@ The tool accepts **mode**, **input** file path, **output** filepath and
 
 ``chmod +x && ./build.sh``
 
-## Run the tool
+## How to run the tool
 
 ### Encrypt a *plaintext* with a *key* and save it as a *ciphertext*  
 
