@@ -8,10 +8,10 @@ encrypted with the Caesar cipher.
 If you have a large English text encrypted with the Caesar cipher, but
 don't have a key to decrypt the text, the tool helps you. It can perform frequency analysis to find the key and then decrypt the text.
 
-The tool accepts **mode**, **input** file path, **output** filepath and
-**key** as CLI arguments.
+The tool accepts **mode**, **input** file path, **output** file path and
+**key** as CLI parameters.
 
-**mode** - encryption **(-e)** or decryption **(-d)** mode.
+**mode** - encryption or decryption.
 
 **input/output** - a path to a text file.
 
@@ -31,6 +31,6 @@ The tool accepts **mode**, **input** file path, **output** filepath and
 
 ``bin/caesar_problem_solver -d ciphertext-path plaintext-path key``
 
-### Decrypt a *ciphertext* without a key and save it as a *plaintext*
+### Decrypt a *ciphertext* using frequency analysis and save it as a *plaintext*
 
 ``bin/caesar_problem_solver -d ciphertext-path plaintext-path``
