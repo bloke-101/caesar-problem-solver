@@ -54,7 +54,7 @@ int IsSupportedMode(char* mode) {
 }
 
 int IsShiftInRange(int shift) {
-    return shift == -1 || shift >= 1 && shift <= 25;
+    return (shift == -1) || (shift >= 1 && shift <= 25);
 }
 
 int CleanUp(FILE** in, char* inFilepath, FILE** out, char* outFilepath) {
