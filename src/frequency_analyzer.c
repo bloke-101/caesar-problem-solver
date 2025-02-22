@@ -1,19 +1,20 @@
 #include <stdio.h>
+#include <errno.h>
 #include <string.h>
 
-#include "utils.h"
-
-const int ALPHABET_SIZE = 26;
+#include "frequency_analyzer.h"
+#include "string_utils.h"
+#include "file_system_utils.h"
 
 
 void CountEnglishLetter(char* textline, unsigned int* amountOfLetters) {
     size_t len = strlen(textline);
     for (size_t i = 0; i < len; i++) {
         if (IsLowerCaseLetter(textline[i])) {
-            amountOfLetters[textline[i] - 'a'];
+            amountOfLetters[textline[i] - 'a']++;
         }
         else if (IsUpperCaseLetter(textline[i])) {
-            amountOfLetters[textline[i] - 'A'];
+            amountOfLetters[textline[i] - 'A']++;
         }
     }
 }
@@ -23,7 +24,7 @@ void FindMostFrequentLetter(unsigned int* amountOfLetters, int* idx) {
     for (int i = 0; i < ALPHABET_SIZE; i++) {
         if (amountOfLetters[i] > max) {
             max = amountOfLetters[i];
-            *idx = i;
+            *idx = 'a' + i;
         }
     }
 }
@@ -31,7 +32,6 @@ void FindMostFrequentLetter(unsigned int* amountOfLetters, int* idx) {
 int FindShift(FILE* in, int* shift) {
     unsigned int amountOfLetters[ALPHABET_SIZE];
     memset(amountOfLetters, 0, ALPHABET_SIZE * sizeof(unsigned int));
-    int BLOCK_SIZE = 257;
     char textline[BLOCK_SIZE];
     while (fgets(textline, BLOCK_SIZE, in)) {
         CountEnglishLetter(textline, amountOfLetters);
@@ -42,6 +42,9 @@ int FindShift(FILE* in, int* shift) {
     }
     int i;
     FindMostFrequentLetter(amountOfLetters, &i);
-    *shift = 'a' + i - 'e' < 0 ? 'a' + i  - 'e' + 26 : 'a' + i - 'e'; 
+    *shift = ((i - 'e') % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
+    if (ResetFilePosition(in) == -1) {
+        return -1;
+    } 
     return 0;
 }

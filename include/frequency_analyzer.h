@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-
-
 void CountEnglishLetter(char* textline, unsigned int* amountOfLetters);
 
 void FindMostFrequentLetter(unsigned int* amountOfLetters, int* i);
