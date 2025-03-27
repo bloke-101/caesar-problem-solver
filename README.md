@@ -1,6 +1,6 @@
 # Caesar-Problem-Solver
 
-Caesar-Problem-Solver is a CLI tool to encrypt or/and decrypt English text
+**Caesar-Problem-Solver** is a CLI tool to encrypt or/and decrypt English text
 encrypted with the Caesar cipher.
 
 If you have a large English text encrypted with the Caesar cipher, but
