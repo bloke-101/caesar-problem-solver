@@ -7,7 +7,7 @@ bin/%.o: src/%.c include/%.h
 	$(CC) $(CFLAGS) -I include -c $< -o $@
 
 caesar_problem_solver: src/main.c $(OBJMODULES)
-	$(CC) $(CFLAGS) -I include $^ -o bin/$@.elf
+	$(CC) $(CFLAGS) -I include $^ -o bin/$@
 	
 make_exec_dir: 
 	mkdir -p bin
