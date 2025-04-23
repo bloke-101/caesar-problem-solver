@@ -9,7 +9,10 @@ bin/%.o: src/%.c include/%.h
 caesar_problem_solver: src/main.c $(OBJMODULES)
 	$(CC) $(CFLAGS) -I include $^ -o bin/$@.elf
 	
-build: caesar_problem_solver
+make_exec_dir: 
+	mkdir -p bin
+
+build: make_exec_dir caesar_problem_solver
 
 clean:
-	rm -f bin/*
+	rm -rf bin/*
