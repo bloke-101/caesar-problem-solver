@@ -17,7 +17,11 @@ The tool accepts **mode**, **input** file path, **output** file path and
 
 ## How to build the tool
 
-``chmod +x build.sh && ./build.sh``
+``make build``
+
+## How to make a clean build
+
+``make clean && make build``
 
 ## How to run the tool
 
