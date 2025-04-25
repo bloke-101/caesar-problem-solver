@@ -4,6 +4,8 @@
 
 #include "string_utils.h"
 
+const int alphabet_size = 26;
+
 int is_lower_case_letter(char c) {
     return c >= 'a' && c <= 'z';
 }

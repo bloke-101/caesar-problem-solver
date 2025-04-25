@@ -6,7 +6,7 @@
 #include "string_utils.h"
 #include "file_system_utils.h"
 
-void count_english_letter(char* text_line, unsigned int* amount_of_letters) {
+static void count_english_letter(char* text_line, unsigned int* amount_of_letters) {
     size_t len = strlen(text_line);
     for (size_t i = 0; i < len; i++) {
         if (is_lower_case_letter(text_line[i])) {
@@ -18,9 +18,9 @@ void count_english_letter(char* text_line, unsigned int* amount_of_letters) {
     }
 }
 
-void find_most_frequent_letter(unsigned int* amount_of_letters, int* idx) {
+static void find_most_frequent_letter(unsigned int* amount_of_letters, int* idx) {
     unsigned int max = 0;
-    for (int i = 0; i < ALPHABET_SIZE; i++) {
+    for (int i = 0; i < alphabet_size; i++) {
         if (amount_of_letters[i] > max) {
             max = amount_of_letters[i];
             *idx = 'a' + i;
@@ -29,10 +29,10 @@ void find_most_frequent_letter(unsigned int* amount_of_letters, int* idx) {
 }
 
 int find_shift(FILE* in, int* shift) {
-    unsigned int amount_of_letters[ALPHABET_SIZE];
-    memset(amount_of_letters, 0, ALPHABET_SIZE * sizeof(unsigned int));
-    char text_line[BLOCK_SIZE];
-    while (fgets(text_line, BLOCK_SIZE, in)) {
+    unsigned int amount_of_letters[alphabet_size];
+    memset(amount_of_letters, 0, alphabet_size * sizeof(unsigned int));
+    char text_line[block_size];
+    while (fgets(text_line, block_size, in)) {
         count_english_letter(text_line, amount_of_letters);
     }
     if (ferror(in)) {
@@ -41,7 +41,7 @@ int find_shift(FILE* in, int* shift) {
     }
     int i;
     find_most_frequent_letter(amount_of_letters, &i);
-    *shift = ((i - 'e') % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
+    *shift = ((i - 'e') % alphabet_size + alphabet_size) % alphabet_size;
     if (reset_file_position(in) == -1) {
         return -1;
     } 

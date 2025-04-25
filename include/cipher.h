@@ -1,8 +1,7 @@
-void shift_lower_case_letter(char in, char* out, int shift);
-
-void shift_upper_case_letter(char in, char* out, int shift);
-
-void shift_letters(char* in, char* out, int shift);
+#ifndef CIPHER_H_SENTRY
+#define CIPHER_H_SENTRY
 
 int shift_text(FILE* in, FILE* out, int shift);
+
+#endif
 

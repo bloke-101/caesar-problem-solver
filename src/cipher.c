@@ -7,18 +7,19 @@
 #include "file_system_utils.h"
 #include "frequency_analyzer.h"
 
-void shift_lower_case_letter(char in, char* out, int shift) {
+
+static void shift_lower_case_letter(char in, char* out, int shift) {
     shift += in - 'a';
-    *out = 'a' + (shift % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
+    *out = 'a' + (shift % alphabet_size + alphabet_size) % alphabet_size;
 }
 
-void shift_upper_case_letter(char in, char* out, int shift) {
+static void shift_upper_case_letter(char in, char* out, int shift) {
     shift += in - 'A';
-    *out = 'A' + (shift % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
+    *out = 'A' + (shift % alphabet_size + alphabet_size) % alphabet_size;
 }
 
-void shift_letters(char* in, char* out, int shift) {
-    for (int i = 0; i < BLOCK_SIZE; i++) {
+static void shift_letters(char* in, char* out, int shift) {
+    for (int i = 0; i < block_size; i++) {
         if (is_lower_case_letter(in[i])) {
             shift_lower_case_letter(in[i], &out[i], shift);
         }
@@ -32,9 +33,9 @@ void shift_letters(char* in, char* out, int shift) {
 }
 
 int shift_text(FILE* in, FILE* out, int shift) {
-    char input_line[BLOCK_SIZE];
-    char output_line[BLOCK_SIZE];
-    while (fgets(input_line, BLOCK_SIZE, in)) {
+    char input_line[block_size];
+    char output_line[block_size];
+    while (fgets(input_line, block_size, in)) {
         shift_letters(input_line, output_line, shift);
         if (fputs(output_line, out) == -1) {
             perror("Failed to write a line");

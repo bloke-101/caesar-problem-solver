@@ -4,6 +4,8 @@
 
 #include "file_system_utils.h"
 
+const int block_size = 257;
+
 int open_file(FILE** f, char* file_path, char* mode) {
     if ((*f = fopen(file_path, mode)) == NULL) {
         char* msg = "Failed to open %s: %s\n";
