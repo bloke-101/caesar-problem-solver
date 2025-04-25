@@ -1,7 +1,8 @@
 #define BLOCK_SIZE 257
 
-int OpenFile(FILE** f, char* filepath, char* mode);
+int open_file(FILE** f, char* file_path, char* mode);
 
-int CloseFile(FILE** f, char* filepath);
+int close_file(FILE** f, char* file_path);
 
-int ResetFilePosition(FILE* in);
+int reset_file_position(FILE* in);
+

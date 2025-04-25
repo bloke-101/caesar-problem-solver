@@ -7,24 +7,23 @@
 #include "file_system_utils.h"
 #include "frequency_analyzer.h"
 
-
-void ShiftLowerCaseLetter(char in, char* out, int shift) {
-    int offset = in - 'a' + shift;
-    *out = 'a' + (offset % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
+void shift_lower_case_letter(char in, char* out, int shift) {
+    shift += in - 'a';
+    *out = 'a' + (shift % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
 }
 
-void ShiftUpperCaseLetter(char in, char* out, int shift) {
-    int offset = in - 'A' + shift;
-    *out = 'A' + (offset % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
+void shift_upper_case_letter(char in, char* out, int shift) {
+    shift += in - 'A';
+    *out = 'A' + (shift % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
 }
 
-void ShiftLetters(char* in, char* out, int shift) {
+void shift_letters(char* in, char* out, int shift) {
     for (int i = 0; i < BLOCK_SIZE; i++) {
-        if (IsLowerCaseLetter(in[i])) {
-            ShiftLowerCaseLetter(in[i], &out[i], shift);
+        if (is_lower_case_letter(in[i])) {
+            shift_lower_case_letter(in[i], &out[i], shift);
         }
-        else if (IsUpperCaseLetter(in[i])) {
-            ShiftUpperCaseLetter(in[i], &out[i], shift);
+        else if (is_upper_case_letter(in[i])) {
+            shift_upper_case_letter(in[i], &out[i], shift);
         }
         else {
             out[i] = in[i];
@@ -32,12 +31,12 @@ void ShiftLetters(char* in, char* out, int shift) {
     }
 }
 
-int Shift(FILE* in, FILE* out, int shift) {
-    char inputLine[BLOCK_SIZE];
-    char outputLine[BLOCK_SIZE];
-    while (fgets(inputLine, BLOCK_SIZE, in)) {
-        ShiftLetters(inputLine, outputLine, shift);
-        if (fputs(outputLine, out) == -1) {
+int shift_text(FILE* in, FILE* out, int shift) {
+    char input_line[BLOCK_SIZE];
+    char output_line[BLOCK_SIZE];
+    while (fgets(input_line, BLOCK_SIZE, in)) {
+        shift_letters(input_line, output_line, shift);
+        if (fputs(output_line, out) == -1) {
             perror("Failed to write a line");
             return -1;
         }
@@ -48,3 +47,4 @@ int Shift(FILE* in, FILE* out, int shift) {
     }
     return 0;
 }
+

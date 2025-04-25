@@ -7,8 +7,7 @@
 #include "file_system_utils.h"
 #include "frequency_analyzer.h"
 
-
-void ShowHelpMsg() {
+void show_help_msg() {
     char* message = "Encrypt/decrypt text files with Caesar cipher.\n\n"
 
         "To perform encryption this tool needs:\n"
@@ -30,112 +29,113 @@ void ShowHelpMsg() {
     fputs(message, stdout);
 }
 
-void ShowIncorrectArgsMsg() {
+void show_incorrect_args_msg() {
     char* message = "Wrong CLI arguments!\n"
         "Read the help message.\n\n";
     fputs(message, stdout);
-    ShowHelpMsg();
+    show_help_msg();
 }
 
-int IsArgsInRange(int amountOfArgs) {
-    return amountOfArgs >= 4 && amountOfArgs <= 5;
+int is_arg_in_range(int amount_of_args) {
+    return amount_of_args >= 4 && amount_of_args <= 5;
 }
 
-int IsEncryptionMode(char* mode) {
+int is_encryption_mode(char* mode) {
     return strcmp(mode, "-e") == 0;
 }
 
-int IsDecryptionMode(char* mode) {
+int is_decryption_mode(char* mode) {
     return strcmp(mode, "-d") == 0;   
 }
 
-int IsSupportedMode(char* mode) {
-    return IsEncryptionMode(mode) || IsDecryptionMode(mode);
+int is_supported_mode(char* mode) {
+    return is_encryption_mode(mode) || is_decryption_mode(mode);
 }
 
-int IsShiftInRange(int shift) {
+int is_shift_in_range(int shift) {
     return (shift == -1) || (shift >= 1 && shift <= 25);
 }
 
-int CleanUp(FILE** in, char* inFilepath, FILE** out, char* outFilepath) {
-    if (CloseFile(in, inFilepath) == -1) {
-        if (CloseFile(out, outFilepath) == -1) {
+int clean_up(FILE** in, char* in_file_path, FILE** out, char* out_file_path) {
+    if (close_file(in, in_file_path) == -1) {
+        if (close_file(out, out_file_path) == -1) {
             return -1;
         }
         return -1;
     }
-    if (CloseFile(out, outFilepath) == -1) {
+    if (close_file(out, out_file_path) == -1) {
         return -1;
     }
     return 0;
 }
 
-int DoEncryption(char* plaintextPath, char* ciphertextPath, int shift) {
+int do_encryption(char* plaintext_path, char* ciphertext_path, int shift) {
     FILE* in = NULL;
-    if (OpenFile(&in, plaintextPath, "r") == -1) {
+    if (open_file(&in, plaintext_path, "r") == -1) {
         return -1;    
     }
     FILE* out = NULL;
-    if (OpenFile(&out, ciphertextPath, "w") == -1) {
-        CleanUp(&in, plaintextPath, &out, ciphertextPath);
+    if (open_file(&out, ciphertext_path, "w") == -1) {
+        clean_up(&in, plaintext_path, &out, ciphertext_path);
         return -1;    
     }
-    if (Shift(in, out, shift) == -1) {
-        CleanUp(&in, plaintextPath, &out, ciphertextPath);
+    if (shift_text(in, out, shift) == -1) {
+        clean_up(&in, plaintext_path, &out, ciphertext_path);
         return -1;
     }
-    if (CleanUp(&in, plaintextPath, &out, ciphertextPath) == -1) {
+    if (clean_up(&in, plaintext_path, &out, ciphertext_path) == -1) {
         return -1;
     }
     char* msg = "Encrypted %s with shift=%d and saved it as %s\n"; 
-    printf(msg, plaintextPath, shift, ciphertextPath);
+    printf(msg, plaintext_path, shift, ciphertext_path);
     return 0;
 }
 
-int DoDecryption(char* ciphertextPath, char* plaintextPath, int shift) {
+int do_decryption(char* ciphertext_path, char* plaintext_path, int shift) {
     FILE* in = NULL;
-    if (OpenFile(&in, ciphertextPath, "r") == -1) {
+    if (open_file(&in, ciphertext_path, "r") == -1) {
         return -1;    
     }
-    if (shift == -1 && FindShift(in, &shift) == -1) {
+    if (shift == -1 && find_shift(in, &shift) == -1) {
         return -1;
     }
     FILE* out = NULL;
-    if (OpenFile(&out, plaintextPath, "w") == -1) {
-        CleanUp(&in, ciphertextPath, &out, plaintextPath);
+    if (open_file(&out, plaintext_path, "w") == -1) {
+        clean_up(&in, ciphertext_path, &out, plaintext_path);
         return -1;    
     }
-    if (Shift(in, out, -shift) == -1) {
-        CleanUp(&in, ciphertextPath, &out, plaintextPath);
+    if (shift_text(in, out, -shift) == -1) {
+        clean_up(&in, ciphertext_path, &out, plaintext_path);
         return -1;
     }
-    if (CleanUp(&in, ciphertextPath, &out, plaintextPath) == -1) {
+    if (clean_up(&in, ciphertext_path, &out, plaintext_path) == -1) {
         return -1;
     }
     char* msg = "Decrypted %s with shift=%d and saved it as %s\n"; 
-    printf(msg, ciphertextPath, shift, plaintextPath);
+    printf(msg, ciphertext_path, shift, plaintext_path);
     return 0;
 }
 
 int main(int argc, char** argv) {
-    if (!IsArgsInRange(argc)) {
-        ShowIncorrectArgsMsg();
+    if (!is_arg_in_range(argc)) {
+        show_incorrect_args_msg();
         return 0;
     }
     int shift = -1;
-    if (ConvertStrToInt(argv[argc - 1], &shift) == -1) {
+    if (convert_str_to_int(argv[argc - 1], &shift) == -1) {
         return -1;
     } 
-    if (!IsShiftInRange(shift)) {
-        fprintf(stderr, "Shift is out of range:%d\n", shift);
+    if (!is_shift_in_range(shift)) {
+        fprintf(stderr, "shift is out of range:%d\n", shift);
         return -1;
     }
-    if (IsEncryptionMode(argv[1]) && argc == 5) {
-        return DoEncryption(argv[2], argv[3], shift);
+    if (is_encryption_mode(argv[1]) && argc == 5) {
+        return do_encryption(argv[2], argv[3], shift);
     }
-    else if (IsDecryptionMode(argv[1])) {
-        return DoDecryption(argv[2], argv[3], shift);
+    else if (is_decryption_mode(argv[1])) {
+        return do_decryption(argv[2], argv[3], shift);
     }
-    ShowIncorrectArgsMsg();
+    show_incorrect_args_msg();
     return 0;
 }
+

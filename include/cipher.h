@@ -1,7 +1,8 @@
-void ShiftLowerCaseLetter(char in, char* out, int shift);
+void shift_lower_case_letter(char in, char* out, int shift);
 
-void ShiftUpperCaseLetter(char in, char* out, int shift);
+void shift_upper_case_letter(char in, char* out, int shift);
 
-void ShiftLetters(char* in, char* out, int shift);
+void shift_letters(char* in, char* out, int shift);
 
-int Shift(FILE* in, FILE* out, int shift);
+int shift_text(FILE* in, FILE* out, int shift);
+

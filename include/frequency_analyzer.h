@@ -1,5 +1,6 @@
-void CountEnglishLetter(char* textline, unsigned int* amountOfLetters);
+void count_english_letter(char* text_line, unsigned int* amount_of_letters);
 
-void FindMostFrequentLetter(unsigned int* amountOfLetters, int* i);
+void find_most_frequent_letter(unsigned int* amount_of_letters, int* i);
 
-int FindShift(FILE* in, int* shift);    
+int find_shift(FILE* in, int* shift); 
+

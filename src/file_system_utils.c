@@ -4,37 +4,37 @@
 
 #include "file_system_utils.h"
 
-
-int OpenFile(FILE** f, char* filepath, char* mode) {
-    if ((*f = fopen(filepath, mode)) == NULL) {
+int open_file(FILE** f, char* file_path, char* mode) {
+    if ((*f = fopen(file_path, mode)) == NULL) {
         char* msg = "Failed to open %s: %s\n";
-        fprintf(stderr, msg, filepath, strerror(errno));
+        fprintf(stderr, msg, file_path, strerror(errno));
         return -1;
     }
     return 0;
 }
 
-static int IsOpen(FILE* f) {
+static int is_open(FILE* f) {
     return f != NULL;
 }
 
-int CloseFile(FILE** f, char* filepath) {
-    if (!IsOpen(*f)) {
+int close_file(FILE** f, char* file_path) {
+    if (!is_open(*f)) {
         return 0;
     }
     if (fclose(*f) == EOF) {
         char* msg = "Failed to close %s:%s\n";
-        fprintf(stderr, msg, filepath, strerror(errno));
+        fprintf(stderr, msg, file_path, strerror(errno));
         return -1;
     }
     *f = NULL;
     return 0;
 }
 
-int ResetFilePosition(FILE* in) {
+int reset_file_position(FILE* in) {
     if (fseek(in, 0, SEEK_SET) != 0) {
         perror("Failed to reset file position");
         return -1;
     }
     return 0;
 }
+
